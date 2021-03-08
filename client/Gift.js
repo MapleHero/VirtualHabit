@@ -12,37 +12,14 @@ import {
 import { toTxResult } from "@celo/connect"
 import * as Linking from 'expo-linking'
 import HelloWorldContract from './contracts/HelloWorld.json'
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import { NavigationContainer } from '@react-navigation/native';
-import GiftScreen from "./Gift.js";
+
 
 YellowBox.ignoreWarnings(['Warning: The provided value \'moz', 'Warning: The provided value \'ms-stream'])
 
 // set up ContractKit, using forno as a provider
 // testnet
 
-const Drawer = createDrawerNavigator();
-
-function HomeScreen({ navigation }) {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Button
-        onPress={() => navigation.navigate('Notifications')}
-        title="Go to notifications"
-      />
-    </View>
-  );
-}
-
-function NotificationsScreen({ navigation }) {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Button onPress={() => navigation.goBack()} title="Go back home" />
-    </View>
-  );
-}
-
-export default class App extends React.Component {
+export default class GiftScreen extends React.Component {
 
   // Set the defaults for the state
   state = {
@@ -229,43 +206,43 @@ export default class App extends React.Component {
     this.setState({textInput: text})
   }
 
-   HomeScreen({ navigation }) {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Button
-          onPress={() => navigation.navigate('Notifications')}
-          title="Go to notifications"
-        />
-      </View>
-    );
-  }
-  
-
-  
-   NotificationsScreen({ navigation }) {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Button onPress={() => navigation.goBack()} title="Go back home" />
-      </View>
-    );
-  }
-  
-
-
   render(){
     return (
-      <NavigationContainer>
-      <Drawer.Navigator initialRouteName="Home">
-        <Drawer.Screen name="Home" component={HomeScreen} />
-        <Drawer.Screen name="Notifications" component={NotificationsScreen} />
-        <Drawer.Screen name="Give Gift" component={GiftScreen} />
-      </Drawer.Navigator>
-    </NavigationContainer>
+      <View style={styles.container}>
+        <Image resizeMode='contain' source={require("./assets/white-wallet-rings.png")}></Image>
+        <Text>Open up client/App.js to start working on your app!</Text>
+
+        <Text style={styles.title}>Login first</Text>
+        <Button title="login()"
+          onPress={()=> this.login()} />
+                <Text style={styles.title}>Account Info:</Text>
+       <Button title="Send Money"
+          onPress={()=> this.sendMoney()} />
+        <Text>For Log: {this.state.forLog}</Text>
+        <Text>Current Account Address:</Text>
+        <Text>{this.state.address}</Text>
+        <Text>Phone number: {this.state.phoneNumber}</Text>
+        <Text>cUSD Balance: {this.state.cUSDBalance}</Text>
+
+        <Text style={styles.title}>Read HelloWorld</Text>
+        <Button title="Read Contract Name"
+          onPress={()=> this.read()} />
+        <Text>Contract Name: {this.state.contractName}</Text>
+
+        <Text style={styles.title}>Write to HelloWorld</Text>
+        <Text>New contract name:</Text>
+        <TextInput
+          style={{  borderColor: 'black', borderWidth: 1, backgroundColor: 'white' }}
+          placeholder="input new name here"
+          onChangeText={text => this.onChangeText(text)}
+          value={this.state.textInput}
+          />
+        <Button style={{padding: 30}} title="update contract name"
+          onPress={()=> this.write()} />
+      </View>
     );
   }
 }
-
-
 
 const styles = StyleSheet.create({
   container: {
