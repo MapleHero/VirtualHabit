@@ -16,12 +16,14 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import GiftScreen from "./Gift.js";
 import CreateBounty from "./CreateBounty.js"
+import {MainContext} from "./MyContext";
 YellowBox.ignoreWarnings(['Warning: The provided value \'moz', 'Warning: The provided value \'ms-stream'])
 
 // set up ContractKit, using forno as a provider
 // testnet
 
 const Drawer = createDrawerNavigator();
+const user = { name: 'Tania', loggedIn: true };
 
 function HomeScreen({ navigation }) {
   return (
@@ -44,16 +46,24 @@ function NotificationsScreen({ navigation }) {
 
 export default class App extends React.Component {
 
+ 
+
   // Set the defaults for the state
   state = {
-    address: 'Not logged in',
+    address: 'Set in AppJS',
     phoneNumber: 'Not logged in',
     cUSDBalance: 'Not logged in',
     forLog: 'not defined??',
     helloWorldContract: {},
     contractName: '',
-    textInput: ''
+    textInput: '', 
+    setAddress: this.setAddress,
   }
+
+  setAddress = (address) => {
+    this.setAddress({address});
+  }
+
 
   // This function is called when the page successfully renders
   componentDidMount = async () => {
@@ -253,15 +263,24 @@ export default class App extends React.Component {
 
 
   render(){
+
+
     return (
-      <NavigationContainer>
+  
+      <MainContext.Provider value={this.state}>
+      <NavigationContainer >
+           
       <Drawer.Navigator initialRouteName="Home">
         <Drawer.Screen name="Home" component={HomeScreen} />
         <Drawer.Screen name="Notifications" component={NotificationsScreen} />
         <Drawer.Screen name="Give Gift" component={GiftScreen} />
         <Drawer.Screen name="Create bounty" component={CreateBounty} />
       </Drawer.Navigator>
+     
     </NavigationContainer>
+    </MainContext.Provider>
+  
+ 
     );
   }
 }

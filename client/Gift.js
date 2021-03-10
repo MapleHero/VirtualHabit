@@ -12,7 +12,7 @@ import {
 import { toTxResult } from "@celo/connect"
 import * as Linking from 'expo-linking'
 import HelloWorldContract from './contracts/HelloWorld.json'
-
+import  {MainContext}  from './MyContext'
 
 YellowBox.ignoreWarnings(['Warning: The provided value \'moz', 'Warning: The provided value \'ms-stream'])
 
@@ -20,20 +20,24 @@ YellowBox.ignoreWarnings(['Warning: The provided value \'moz', 'Warning: The pro
 // testnet
 
 export default class GiftScreen extends React.Component {
-
+  static contextType = MainContext;
   // Set the defaults for the state
   state = {
-    address: 'Not logged in',
-    phoneNumber: 'Not logged in',
+    address: null,
+    phoneNumber: 'Top of Gift',
     cUSDBalance: 'Not logged in',
     forLog: 'not defined??',
     helloWorldContract: {},
     contractName: '',
     textInput: ''
-  }
+  };
 
   // This function is called when the page successfully renders
   componentDidMount = async () => {
+
+    this._initState();
+
+    console.log(user) // { name: 'Tania', loggedIn: true }
 
     // Check the Celo network ID
     const networkId = await web3.eth.net.getId();
@@ -49,6 +53,21 @@ export default class GiftScreen extends React.Component {
 
     // Save the contract instance
     this.setState({ helloWorldContract: instance })
+  }
+
+  _initState() { 
+      const context = this.context;
+
+      const stateData = {
+        address: 'Se in gift mid',
+        phoneNumber: 'Not logged in',
+        cUSDBalance: 'Not logged in',
+        forLog: 'not defined??',
+        helloWorldContract: {},
+        contractName: '',
+        textInput: ''
+      }
+      context.setAddress('Gift Set ');
   }
 
   sendMoney = async () => {
@@ -207,6 +226,9 @@ export default class GiftScreen extends React.Component {
   }
 
   render(){
+
+    let user = this.context;
+
     return (
       <View style={styles.container}>
         <Image resizeMode='contain' source={require("./assets/white-wallet-rings.png")}></Image>
@@ -218,7 +240,7 @@ export default class GiftScreen extends React.Component {
                 <Text style={styles.title}>Account Info:</Text>
        <Button title="Send Money"
           onPress={()=> this.sendMoney()} />
-        <Text>For Log: {this.state.forLog}</Text>
+        <Text>For Log: {user.name}</Text>
         <Text>Current Account Address:</Text>
         <Text>{this.state.address}</Text>
         <Text>Phone number: {this.state.phoneNumber}</Text>
