@@ -1,7 +1,7 @@
 import React from 'react'
 import './global'
 import { web3, kit } from './root'
-import { Image, StyleSheet, Text, TextInput, Button, View, YellowBox } from 'react-native'
+import { Image, StyleSheet, Text, TextInput, Button, View, LogBox } from 'react-native'
 import {
   requestTxSig,
   waitForSignedTxs,
@@ -14,7 +14,7 @@ import * as Linking from 'expo-linking'
 import HelloWorldContract from './contracts/HelloWorld.json'
 
 
-YellowBox.ignoreWarnings(['Warning: The provided value \'moz', 'Warning: The provided value \'ms-stream'])
+LogBox.ignoreLogs(['Warning: The provided value \'moz', 'Warning: The provided value \'ms-stream'])
 
 // set up ContractKit, using forno as a provider
 // testnet
