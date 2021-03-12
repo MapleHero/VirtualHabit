@@ -22,15 +22,7 @@ YellowBox.ignoreWarnings(['Warning: The provided value \'moz', 'Warning: The pro
 export default class GiftScreen extends React.Component {
   static contextType = MainContext;
   // Set the defaults for the state
-  state = {
-    address: null,
-    phoneNumber: 'Top of Gift',
-    cUSDBalance: 'Not logged in',
-    forLog: 'not defined??',
-    helloWorldContract: {},
-    contractName: '',
-    textInput: ''
-  };
+
 
   // This function is called when the page successfully renders
   componentDidMount = async () => {
@@ -52,7 +44,7 @@ export default class GiftScreen extends React.Component {
     );
 
     // Save the contract instance
-    this.setState({ helloWorldContract: instance })
+    context.setState({ helloWorldContract: instance })
   }
 
   _initState() { 
@@ -73,7 +65,7 @@ export default class GiftScreen extends React.Component {
   sendMoney = async () => {
 
     // Update state
-    this.setState({ forLog: 'dappkitResponse.phoneNumber' })
+    //this.setState({ forLog: 'dappkitResponse.phoneNumber' })
 
 
     this.transfer()
@@ -93,7 +85,7 @@ export default class GiftScreen extends React.Component {
       // Create a transaction object using ContractKit
       const stableToken = await kit.contracts.getStableToken();
       const txObject = stableToken.transfer(transferToAccount, transferValue).txo;
-    const callback = Linking.makeUrl('/my/path')
+      const callback = Linking.makeUrl('/my/path')
       this.setState({forLog: 'duh'})
       // Send a request to the Celo wallet to send an update transaction to the HelloWorld contract
       requestTxSig(
@@ -102,7 +94,7 @@ export default class GiftScreen extends React.Component {
           {
             // @ts-ignore
             tx: txObject,
-            from: this.state.address,
+            from: this.context.address,
             to: stableToken.address,
             feeCurrency: FeeCurrency.cUSD
           }
@@ -141,7 +133,7 @@ export default class GiftScreen extends React.Component {
   }
 
   login = async () => {
-
+    const context = this.context;
     // A string you can pass to DAppKit, that you can use to listen to the response for that request
     const requestId = 'login'
 
@@ -172,7 +164,10 @@ export default class GiftScreen extends React.Component {
 
     // Convert from a big number to a string
     let cUSDBalance = cUSDBalanceBig.toString()
-
+    console.log('attempt to set address');
+    MainContext.setAddress(dappkitResponse.address);
+    
+    console.log(dappkitResponse.address);
     // Update state
     this.setState({ cUSDBalance,
                     isLoadingBalance: false,
@@ -242,14 +237,14 @@ export default class GiftScreen extends React.Component {
           onPress={()=> this.sendMoney()} />
         <Text>For Log: {user.name}</Text>
         <Text>Current Account Address:</Text>
-        <Text>{this.state.address}</Text>
-        <Text>Phone number: {this.state.phoneNumber}</Text>
-        <Text>cUSD Balance: {this.state.cUSDBalance}</Text>
+        <Text>{this.context.address}</Text>
+        <Text>Phone number: {this.context.phoneNumber}</Text>
+        <Text>cUSD Balance: {this.context.cUSDBalance}</Text>
 
         <Text style={styles.title}>Read HelloWorld</Text>
         <Button title="Read Contract Name"
           onPress={()=> this.read()} />
-        <Text>Contract Name: {this.state.contractName}</Text>
+        <Text>Contract Name: {this.context.contractName}</Text>
 
         <Text style={styles.title}>Write to HelloWorld</Text>
         <Text>New contract name:</Text>
@@ -257,7 +252,7 @@ export default class GiftScreen extends React.Component {
           style={{  borderColor: 'black', borderWidth: 1, backgroundColor: 'white' }}
           placeholder="input new name here"
           onChangeText={text => this.onChangeText(text)}
-          value={this.state.textInput}
+          value={this.context.textInput}
           />
         <Button style={{padding: 30}} title="update contract name"
           onPress={()=> this.write()} />

@@ -9,4 +9,4 @@ const defaultVal = {
     contractName: {},
     textInput: {}
 } //Insert the default value here.
-export const MainContext = React.createContext(defaultVal);
+export const MainContext = React.createContext({defaultVal, setAddress: () => {}});

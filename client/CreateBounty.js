@@ -50,7 +50,7 @@ static contextType = MainContext;
     //It will get the data from context 
     this.setState({address: context.address});
 
-    console.log('ran');
+    console.log('ran at 11.17');
     console.log(context);
 
     console.log('test');

@@ -50,7 +50,7 @@ export default class App extends React.Component {
 
   // Set the defaults for the state
   state = {
-    address: 'Set in AppJS',
+    address: 'Set in AppJS2',
     phoneNumber: 'Not logged in',
     cUSDBalance: 'Not logged in',
     forLog: 'not defined??',
@@ -61,6 +61,7 @@ export default class App extends React.Component {
   }
 
   setAddress = (address) => {
+    console.log('update state?')
     this.setAddress({address});
   }
 
@@ -81,7 +82,7 @@ export default class App extends React.Component {
     );
 
     // Save the contract instance
-    this.setState({ helloWorldContract: instance })
+    //this.setState({ helloWorldContract: instance })
   }
 
   sendMoney = async () => {
@@ -186,7 +187,8 @@ export default class App extends React.Component {
 
     // Convert from a big number to a string
     let cUSDBalance = cUSDBalanceBig.toString()
-
+    console.log('set address');
+    context.setAddress(dappkitResponse);
     // Update state
     this.setState({ cUSDBalance,
                     isLoadingBalance: false,
@@ -267,7 +269,7 @@ export default class App extends React.Component {
 
     return (
   
-      <MainContext.Provider value={this.state}>
+      <MainContext.Provider value={this.state, this.setAddress}>
       <NavigationContainer >
            
       <Drawer.Navigator initialRouteName="Home">
