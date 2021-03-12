@@ -26,7 +26,6 @@ export default class CreateBounty extends React.Component {
     address: 'Not logged in',
     phoneNumber: 'Not logged in',
     cUSDBalance: 'Not logged in',
-    forLog: 'not defined??',
     helloWorldContract: {},
     contractName: '',
     textInput: ''
@@ -51,46 +50,6 @@ export default class CreateBounty extends React.Component {
     this.setState({ helloWorldContract: instance })
   }
   
-  login = async () => {
-
-    // A string you can pass to DAppKit, that you can use to listen to the response for that request
-    const requestId = 'login'
-
-    // A string that will be displayed to the user, indicating the DApp requesting access/signature
-    const dappName = 'Hello Celo'
-
-    // The deeplink that the Celo Wallet will use to redirect the user back to the DApp with the appropriate payload.
-    const callback = Linking.makeUrl('/my/path')
-
-    // Ask the Celo Alfajores Wallet for user info
-    requestAccountAddress({
-      requestId,
-      dappName,
-      callback,
-    })
-
-    // Wait for the Celo Wallet response
-    const dappkitResponse = await waitForAccountAuth(requestId)
-
-    // Set the default account to the account returned from the wallet
-    kit.defaultAccount = dappkitResponse.address
-
-    // Get the stabel token contract
-    const stableToken = await kit.contracts.getStableToken()
-
-    // Get the user account balance (cUSD)
-    const cUSDBalanceBig = await stableToken.balanceOf(kit.defaultAccount)
-
-    // Convert from a big number to a string
-    let cUSDBalance = cUSDBalanceBig.toString()
-
-    // Update state
-    this.setState({ cUSDBalance,
-                    isLoadingBalance: false,
-                    address: dappkitResponse.address,
-                    phoneNumber: dappkitResponse.phoneNumber })
-  }
-
   read = async () => {
 
     // Read the name stored in the HelloWorld contract

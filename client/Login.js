@@ -27,84 +27,11 @@ export default class GiftScreen extends React.Component {
     phoneNumber: 'Not logged in',
     cUSDBalance: 'Not logged in',
   }
-
+  //this.props.navigation.getParam(paramName, defaultValue)
   // This function is called when the page successfully renders
   componentDidMount = async () => {
     // Check the Celo network ID
     const networkId = await web3.eth.net.getId();
-
-    // Wait for the Celo Wallet response
-    const dappkitResponse = await waitForAccountAuth(requestId)
-  }
-
-  sendMoney = async () => {
-    // Update state
-    this.setState({ forLog: 'dappkitResponse.phoneNumber' })
-
-    this.transfer()
-  }
-
-  transfer = async () => {
-    if (this.state.address) {
-      console.log("Entering transfer")
-      const requestId = 'transfer';
-      const dappName = 'Hello Celo';
-
-      // Replace with your own account address and desired value in WEI to transfer
-      const transferToAccount = "0xD86518b29BB52a5DAC5991eACf09481CE4B0710d";
-      const transferValue = "10000000000";
-
-      // Create a transaction object using ContractKit
-      const stableToken = await kit.contracts.getStableToken();
-      const txObject = stableToken.transfer(transferToAccount, transferValue).txo;
-      const callback = Linking.makeUrl('/my/path')
-      // Send a request to the Celo wallet to send an update transaction to the HelloWorld contract
-      requestTxSig(
-        kit,
-        [
-          {
-            // @ts-ignore
-            tx: txObject,
-            from: this.state.address,
-            to: stableToken.address,
-            feeCurrency: FeeCurrency.cUSD
-          }
-        ],
-        { requestId, dappName, callback}
-      )
-      // Get the response from the Celo wallet
-      // Wait for signed transaction object and handle possible timeout
-      let tx;
-      try {
-        this.setState({forLog: "start TsssX"})
-        console.log("Star transfer")
-        const dappkitResponse = await waitForSignedTxs(requestId)
-                console.log("Done transfer")
-        tx = dappkitResponse.rawTxs[0]
-      } catch (error) {
-        console.log(error)
-        return
-      }
-
-      // Wait for transaction result and check for success
-      let status;
-      const result = await toTxResult(kit.web3.eth.sendSignedTransaction(tx)).waitReceipt()
-      if (result.status) {
-        status = "transfer succeeded with receipt: " + result.transactionHash;
-      } else {
-        console.log(JSON.stringify(result))
-        status = "failed to send transaction"
-      }
-
-    // Get the user account balance (cUSD)
-    const cUSDBalanceBig = await stableToken.balanceOf(kit.defaultAccount)
-
-    // Convert from a big number to a string
-    let cUSDBalance = cUSDBalanceBig.toString()
-
-    console.log("current balance is after transfer " + cUSDBalance)
-
-    }
   }
 
   login = async () => {
@@ -147,6 +74,8 @@ export default class GiftScreen extends React.Component {
                     isLoadingBalance: false,
                     address: dappkitResponse.address,
                     phoneNumber: dappkitResponse.phoneNumber })
+
+    this.props.functionCallFromParent(dappkitResponse.address);
   }
 
   onChangeText = async (text) => {
@@ -154,15 +83,17 @@ export default class GiftScreen extends React.Component {
   }
 
   render(){
+    const { userName } = this.props.navigation.state.params;
+    console.log(userName)
+
     return (
+ 
+
       <View style={styles.container}>
         <Text style={styles.title}>Login first</Text>
         <Button title="login()"
           onPress={()=> this.login()} />
                 <Text style={styles.title}>Account Info:</Text>
-        <Button title="Send Money"
-          onPress={()=> this.sendMoney()} />
-        <Text>For Log: {this.state.forLog}</Text>
         <Text>Current Account Address:</Text>
         <Text>{this.state.address}</Text>
         <Text>Phone number: {this.state.phoneNumber}</Text>
