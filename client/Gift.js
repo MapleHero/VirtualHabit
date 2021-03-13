@@ -1,4 +1,6 @@
-import React from 'react'
+import React, {Component} from 'react'
+import {connect} from "react-redux";
+
 import './global'
 import { web3, kit } from './root'
 import { Image, StyleSheet, Text, TextInput, Button, View, LogBox } from 'react-native'
@@ -19,13 +21,15 @@ LogBox.ignoreLogs(['Warning: The provided value \'moz', 'Warning: The provided v
 // set up ContractKit, using forno as a provider
 // testnet
 
-export default class GiftScreen extends React.Component {
+const mapStateToProps = state => { 
+  return {  address  : state.address };
+}
 
-  // Set the defaults for the state
-  state = {
-    address: 'Not logged in',
-    phoneNumber: 'Not logged in',
-    cUSDBalance: 'Not logged in',
+class GiftScreen extends Component {
+  componentWillReceiveProps(nextProps) {
+    const currentProps = this.props;
+    //console.log('current props')
+    //console.log(currentProps);
   }
 
   // This function is called when the page successfully renders
@@ -35,17 +39,23 @@ export default class GiftScreen extends React.Component {
 
     // Wait for the Celo Wallet response
     const dappkitResponse = await waitForAccountAuth(requestId)
+    //console.log('component did mount');
+    //console.log(currentProps);
   }
 
   sendMoney = async () => {
-    // Update state
-    this.setState({ forLog: 'dappkitResponse.phoneNumber' })
+    console.log("sendMonay")
+    console.log(this.props.address);
 
     this.transfer()
   }
 
   transfer = async () => {
-    if (this.state.address) {
+    if (this.props.address) {
+
+     kit.defaultAccount = this.props.address;
+
+
       console.log("Entering transfer")
       const requestId = 'transfer';
       const dappName = 'Hello Celo';
@@ -65,7 +75,7 @@ export default class GiftScreen extends React.Component {
           {
             // @ts-ignore
             tx: txObject,
-            from: this.state.address,
+            from: this.props.address,
             to: stableToken.address,
             feeCurrency: FeeCurrency.cUSD
           }
@@ -76,7 +86,7 @@ export default class GiftScreen extends React.Component {
       // Wait for signed transaction object and handle possible timeout
       let tx;
       try {
-        this.setState({forLog: "start TsssX"})
+    
         console.log("Star transfer")
         const dappkitResponse = await waitForSignedTxs(requestId)
                 console.log("Done transfer")
@@ -143,10 +153,10 @@ export default class GiftScreen extends React.Component {
     console.log("current balance is " + cUSDBalance)
 
     // Update state
-    this.setState({ cUSDBalance,
+   /* this.setState({ cUSDBalance,
                     isLoadingBalance: false,
                     address: dappkitResponse.address,
-                    phoneNumber: dappkitResponse.phoneNumber })
+                    phoneNumber: dappkitResponse.phoneNumber })*/
   }
 
   onChangeText = async (text) => {
@@ -154,6 +164,9 @@ export default class GiftScreen extends React.Component {
   }
 
   render(){
+    const {
+      address
+    } = this.props;
     return (
       <View style={styles.container}>
         <Text style={styles.title}>Login first</Text>
@@ -162,15 +175,16 @@ export default class GiftScreen extends React.Component {
                 <Text style={styles.title}>Account Info:</Text>
         <Button title="Send Money"
           onPress={()=> this.sendMoney()} />
-        <Text>For Log: {this.state.forLog}</Text>
         <Text>Current Account Address:</Text>
-        <Text>{this.state.address}</Text>
-        <Text>Phone number: {this.state.phoneNumber}</Text>
-        <Text>cUSD Balance: {this.state.cUSDBalance}</Text>
+        <Text>{this.props.address}</Text>
       </View>
     );
   }
 }
+
+const GiftScreenImpl = connect(mapStateToProps)(GiftScreen);
+
+export default GiftScreenImpl;
 
 const styles = StyleSheet.create({
   container: {

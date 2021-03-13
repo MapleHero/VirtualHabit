@@ -119,7 +119,7 @@ export default class CreateBounty extends React.Component {
           onChangeText={text => this.onChangeText(text)}
           value={this.state.textInput}
           />
-        <Button style={{padding: 30}} title="update contract name"
+        <Button style={{padding: 30}} title="update contract name please"
           onPress={()=> this.write()} />
       </View>
     );

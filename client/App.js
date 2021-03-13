@@ -18,12 +18,14 @@ import GiftScreen from "./Gift.js";
 import Login from "./Login.js";
 import CreateBounty from "./CreateBounty.js"
 LogBox.ignoreLogs(['Warning: The provided value \'moz', 'Warning: The provided value \'ms-stream'])
-
+import reducer from './reducers';
+import { createStore } from 'redux'
+import { Provider } from 'react-redux';
 // set up ContractKit, using forno as a provider
 // testnet
 
 const Drawer = createDrawerNavigator();
-
+const store = createStore(reducer);
 function HomeScreen({ navigation }) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -79,6 +81,7 @@ export default class App extends React.Component {
 
   render(){
     return (
+      <Provider store={store}>
       <NavigationContainer>
       <Drawer.Navigator initialRouteName="Home">
         <Drawer.Screen name="Home" component={HomeScreen} />
@@ -87,6 +90,7 @@ export default class App extends React.Component {
         <Drawer.Screen name="Create bounty" component={CreateBounty} />
       </Drawer.Navigator>
     </NavigationContainer>
+    </Provider>
     );
   }
 }

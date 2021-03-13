@@ -1,8 +1,8 @@
 import {LOGIN} from './types';
 
-function login() {
+function login(payload) {
     return {
-        type : LOGIN
+        type : LOGIN, payload
     };
 }
 
